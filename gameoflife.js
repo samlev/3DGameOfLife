@@ -1,42 +1,76 @@
-var $stage = $('#gameoflife');
+var stage = $('#gameoflife');
 
 // set the scene size
-var WIDTH = stage.width,
-    HEIGHT = stage.height;
+var WIDTH = 640,
+    HEIGHT = 400;
 
 // set some camera attributes
 var VIEW_ANGLE = 45,
     ASPECT = WIDTH / HEIGHT,
-    NEAR = 0.1,
+    NEAR = 1,
     FAR = 10000;
 
-// create a canvas renderer, camera
-// and a scene
-var renderer = new THREE.CanvasRenderer();
-var camera = new THREE.PerspectiveCamera(
+var renderer;
+var camera;
+var scene;
+
+function init() {
+    // create a canvas renderer, camera
+    // and a scene
+    renderer = new THREE.CanvasRenderer();
+    camera = new THREE.PerspectiveCamera(
                    VIEW_ANGLE,
                    ASPECT,
                    NEAR,
                    FAR );
+    
+    scene = new THREE.Scene();
+    
+    // the camera starts at 0,0,0 so pull it back
+    camera.position.z = 300;
+    
+    // start the renderer
+    renderer.setSize(WIDTH, HEIGHT);
+    
+    // attach the render-supplied DOM element
+    stage.append(renderer.domElement);
+    
+    var geometry = new THREE.Geometry();
+    geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( - 500, 0, 0 ) ) );
+    geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 500, 0, 0 ) ) );
+    
+    var material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 } );
+    
+    for ( var i = 0; i <= 20; i ++ ) {
+        var line = new THREE.Line( geometry, material );
+        line.position.z = ( i * 50 ) - 500;
+        scene.add( line );
+    
+        var line = new THREE.Line( geometry, material );
+        line.position.x = ( i * 50 ) - 500;
+        line.rotation.y = 90 * Math.PI / 180;
+        scene.add( line );
+    }
+    
+    // add some ambient light
+    var ambientLight = new THREE.AmbientLight( 0x606060 );
+    scene.add( ambientLight );
+    
+    // draw!
+    renderer.render(scene, camera);
+}
 
-var scene = new THREE.Scene();
-
-// the camera starts at 0,0,0 so pull it back
-camera.position.z = 300;
-
-// start the renderer
-renderer.setSize(WIDTH, HEIGHT);
-
-// attach the render-supplied DOM element
-$stage.append(renderer.domElement);
+$(document).ready(function () {
+    init();
+});
 
 Grid = function() {
     
     return {
         // map size
-        x : 30,
+        x : 20,
         y : 20,
-        z : 10,
+        z : 20,
         
         // thresholds
         th : {
