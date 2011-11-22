@@ -1,9 +1,3 @@
-/** Builds the "Game Of Life" env. */
-function build() {
-    Grid.init();
-    
-}
-
 var $stage = $('#gameoflife');
 
 // set the scene size
