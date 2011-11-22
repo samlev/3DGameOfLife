@@ -27,14 +27,14 @@ function init() {
     scene = new THREE.Scene();
     
     // the camera starts at 0,0,0 so pull it back
-    camera.position.z = 300;
+    camera.position.y = 800;
     
     // start the renderer
     renderer.setSize(WIDTH, HEIGHT);
     
     // attach the render-supplied DOM element
     stage.append(renderer.domElement);
-    
+    /*
     var geometry = new THREE.Geometry();
     geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( - 500, 0, 0 ) ) );
     geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 500, 0, 0 ) ) );
@@ -56,12 +56,24 @@ function init() {
     var ambientLight = new THREE.AmbientLight( 0x606060 );
     scene.add( ambientLight );
     
+    var materials = [];
+
+    for ( var i = 0; i < 6; i ++ ) {
+        materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
+    }
+    
+    cube = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
+    cube.position.y = 150;
+    cube.overdraw = true;
+    scene.add( cube );
+    */
     // draw!
     renderer.render(scene, camera);
 }
 
 $(document).ready(function () {
     init();
+    Grid.init();
 });
 
 Grid = function() {
