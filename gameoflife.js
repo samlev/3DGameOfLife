@@ -1,7 +1,40 @@
 /** Builds the "Game Of Life" env. */
 function build() {
     Grid.init();
+    
 }
+
+var stage = document.getElementByID('gameoflife');
+
+// set the scene size
+var WIDTH = stage.width,
+    HEIGHT = stage.height;
+
+// set some camera attributes
+var VIEW_ANGLE = 45,
+    ASPECT = WIDTH / HEIGHT,
+    NEAR = 0.1,
+    FAR = 10000;
+
+// create a renderer, camera
+// and a scene
+var renderer = new THREE.WebGLRenderer();
+var camera = new THREE.PerspectiveCamera(
+                   VIEW_ANGLE,
+                   ASPECT,
+                   NEAR,
+                   FAR );
+
+var scene = new THREE.Scene();
+
+// the camera starts at 0,0,0 so pull it back
+camera.position.z = 300;
+
+// start the renderer
+renderer.setSize(WIDTH, HEIGHT);
+
+// attach the render-supplied DOM element
+$container.append(renderer.domElement);
 
 Grid = function() {
     
