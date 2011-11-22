@@ -4,7 +4,7 @@ function build() {
     
 }
 
-var stage = document.getElementByID('gameoflife');
+var $stage = $('#gameoflife');
 
 // set the scene size
 var WIDTH = stage.width,
@@ -16,9 +16,9 @@ var VIEW_ANGLE = 45,
     NEAR = 0.1,
     FAR = 10000;
 
-// create a renderer, camera
+// create a canvas renderer, camera
 // and a scene
-var renderer = new THREE.WebGLRenderer();
+var renderer = new THREE.CanvasRenderer();
 var camera = new THREE.PerspectiveCamera(
                    VIEW_ANGLE,
                    ASPECT,
@@ -34,7 +34,7 @@ camera.position.z = 300;
 renderer.setSize(WIDTH, HEIGHT);
 
 // attach the render-supplied DOM element
-$container.append(renderer.domElement);
+$stage.append(renderer.domElement);
 
 Grid = function() {
     
