@@ -1,7 +1,7 @@
 var stage = $('#gameoflife');
 
 // set the scene size
-var WIDTH = 640,
+var WIDTH = 400,
     HEIGHT = 400;
 
 // set some camera attributes
@@ -84,11 +84,15 @@ Grid = function() {
         y : 20,
         z : 20,
         
+        cube_w:Math.floor(WIDTH/x),
+        cube_h:Math.floor(HEIGHT/y),
+        cube_d:Math.floor(400/z),
+        
         // thresholds
         th : {
             lonely: 3,
-            breed: 4,
-            overcrowd: 6
+            breed: {min: 4, max: 6},
+            overcrowd: 8
         },
         
         // the actual map
@@ -155,6 +159,53 @@ Grid = function() {
             
             // return however many we found
             return neighbours;
+        },
+        render: function() {
+            var newmap = []
+            
+            for (i=0;i<this.x;i++) {
+                // add the sub array
+                newmap[i] = [];
+                for (j=0;j<this.y;j++) {
+                    // add the sub array
+                    newmap[i][j] = [];
+                    for (k=0;k<this.z;k++) {
+                        // set the position to 0
+                        newmap[i][j][k] = false;
+                        
+                        var cell = this.is_alive(i,j,k);
+                        var n = this.living_neighbours(i,j,k);
+                        
+                        // transpose
+                        if (cell) {
+                            // is the cell lonely or overcrowded?
+                            if (n <= this.th.lonely || n >= this.th.overcrowd) {
+                                // kill the cell off
+                                scene.remove(cell);
+                            } else {
+                                // if not, just copy it across
+                                newmap[i][j][k] = cell;
+                            }
+                        } else {
+                            // check if we're in the breed threshold
+                            if (n >= this.th.breed.min && n <= this.th.breed.max) {
+                                var materials = [];
+                                for ( var l = 0; l < 6; l ++ ) {
+                                    materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
+                                }
+                                
+                                var newcell = new THREE.Mesh( new THREE.CubeGeometry( this.cube_w, this.cube_h, this.cube_d, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
+                                //cube.position.y = 150;
+                                cube.overdraw = true;
+                                scene.add( cube );
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // replace the map
+            this.map = newmap;
         }
     };
 } ();
