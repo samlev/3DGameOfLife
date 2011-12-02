@@ -195,9 +195,13 @@ Grid = function() {
                                 }
                                 
                                 var newcell = new THREE.Mesh( new THREE.CubeGeometry( this.cube_w, this.cube_h, this.cube_d, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
-                                //cube.position.y = 150;
-                                cube.overdraw = true;
-                                scene.add( cube );
+                                // Position the cube
+                                newcell.position.x = i*this.cube_w;
+                                newcell.position.y = j*this.cube_h;
+                                newcell.position.z = k*this.cube_d;
+                                
+                                newcell.overdraw = true;
+                                scene.add( newcell );
                             }
                         }
                     }
