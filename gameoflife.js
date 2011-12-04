@@ -20,6 +20,9 @@ Grid = function() {
         // the actual map
         map: [],
         
+        run:false,
+        timeout:false,
+        
         // functions!!!
         /** Initializes the map */
         init: function() {
@@ -53,6 +56,8 @@ Grid = function() {
                     }
                 }
             }
+            
+            this.start();
         },
         /** Gets the 'life' value of a position on the map
          * @param x The 'x' position
@@ -147,10 +152,16 @@ Grid = function() {
             }
             
             // replace the map
+            delete this.map;
             this.map = newmap;
             
             // draw
             renderer.render(scene, camera);
+            
+            if (this.run === true) {
+                // render again
+                this.timeout = setTimeout('Grid.render();',$('#speed').val());
+            }
         },
         addCell: function (x,y,z) {
             if (!this.is_alive(x,y,z)) {
@@ -174,11 +185,43 @@ Grid = function() {
             }
             
             return false;
+        },
+        pause: function() {
+            if (this.run === true) {
+                this.run = false;
+                if (this.timeout !== false) {
+                    clearTimeout(this.timeout);
+                    this.timeout = false;
+                }
+                pause.val('Start');
+                
+                pause.click(function () {
+                    Grid.start();
+                });
+            }
+        },
+        start: function() {
+            if (this.run === false) {
+                this.run = true;
+                pause.val('Pause');
+                pause.click(function () {
+                    Grid.pause();
+                });
+                
+                // clear the timeout
+                if (this.timeout !== false) {
+                    clearTimeout(this.timeout);
+                    this.timeout = false;
+                }
+                // start the game
+                this.timeout = setTimeout('Grid.render();',$('#speed').val());
+            }
         }
     };
 } ();
 
 var stage = $('#gameoflife');
+var pause = $('#pause');
 
 // set the scene size
 var WIDTH = 400,
