@@ -12,9 +12,9 @@ Grid = function() {
         
         // thresholds
         th : {
-            lonely: 3,
-            breed: {min: 4, max: 6},
-            overcrowd: 8
+            lonely: 2,
+            breed: {min: 3, max: 6},
+            overcrowd: 9
         },
         
         // the actual map
@@ -31,6 +31,10 @@ Grid = function() {
             this.cube_h=Math.floor(HEIGHT/this.y);
             this.cube_d=Math.floor(400/this.z);
             
+            var i = 0;
+            var j = 0;
+            var k = 0;
+            
             // build out the (empty) map
             for (i=0;i<this.x;i++) {
                 // add the sub array
@@ -43,7 +47,7 @@ Grid = function() {
                         this.map[i][j][k] = false;
                         
                         // randomly decide if we should populate this cell (about 10% of cells will be populated)
-                        if (Math.round(Math.random()*100)==1) {
+                        if (Math.round(Math.random()*10)==1) {
                             this.map[i][j][k] = this.addCell(i,j,k);
                         }
                     }
@@ -67,15 +71,20 @@ Grid = function() {
          */
         living_neighbours : function (x,y,z) {
             // get the min and max to search, respecting the grid boundries
-            min_x = (x > 0 ? x-1 : x);
-            max_x = (x < this.x-1 ? x+1: x);
-            min_y = (y > 0 ? y-1 : y);
-            max_y = (y < this.y-1 ? y+1: y);
-            min_z = (z > 0 ? z-1 : z);
-            max_z = (z < this.z-1 ? z+1: z);
+            var min_x = (x > 0 ? x-1 : x);
+            var max_x = (x < this.x-1 ? x+1: x);
+            var min_y = (y > 0 ? y-1 : y);
+            var max_y = (y < this.y-1 ? y+1: y);
+            var min_z = (z > 0 ? z-1 : z);
+            var max_z = (z < this.z-1 ? z+1: z);
             
             // initialise the number of neighbors
-            neighbours = 0;
+            var neighbours = 0;
+            
+            // the ijk vars
+            var i = 0;
+            var j = 0;
+            var k = 0;
             
             // now perform the search
             for (i=min_x;i<=max_x;i++) {
@@ -94,6 +103,10 @@ Grid = function() {
         },
         render: function() {
             var newmap = [];
+            
+            var i = 0;
+            var j = 0;
+            var k = 0;
             
             for (i=0;i<this.x;i++) {
                 // add the sub array
