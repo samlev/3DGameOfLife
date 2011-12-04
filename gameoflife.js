@@ -13,8 +13,8 @@ Grid = function() {
         // thresholds
         th : {
             lonely: 2,
-            breed: {min: 3, max: 6},
-            overcrowd: 9
+            breed: {min: 3, max: 5},
+            overcrowd: 8
         },
         
         // the actual map
@@ -250,8 +250,8 @@ function init() {
     scene = new THREE.Scene();
     
     // the camera starts at 0,0,0 so pull it back
-    camera.position.x = 200;
-    camera.position.y = 200;
+    camera.position.x = Math.floor(WIDTH/2);
+    camera.position.y = Math.floor(HEIGHT/2);
     camera.position.z = 900;
     
     // start the renderer
