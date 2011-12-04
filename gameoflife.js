@@ -1,92 +1,14 @@
-var stage = $('#gameoflife');
-
-// set the scene size
-var WIDTH = 400,
-    HEIGHT = 400;
-
-// set some camera attributes
-var VIEW_ANGLE = 45,
-    ASPECT = WIDTH / HEIGHT,
-    NEAR = 1,
-    FAR = 10000;
-
-var renderer;
-var camera;
-var scene;
-
-function init() {
-    // create a canvas renderer, camera
-    // and a scene
-    renderer = new THREE.CanvasRenderer();
-    camera = new THREE.PerspectiveCamera(
-                   VIEW_ANGLE,
-                   ASPECT,
-                   NEAR,
-                   FAR );
-    
-    scene = new THREE.Scene();
-    
-    // the camera starts at 0,0,0 so pull it back
-    camera.position.y = 800;
-    
-    // start the renderer
-    renderer.setSize(WIDTH, HEIGHT);
-    
-    // attach the render-supplied DOM element
-    stage.append(renderer.domElement);
-    /*
-    var geometry = new THREE.Geometry();
-    geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( - 500, 0, 0 ) ) );
-    geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 500, 0, 0 ) ) );
-    
-    var material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 } );
-    
-    for ( var i = 0; i <= 20; i ++ ) {
-        var line = new THREE.Line( geometry, material );
-        line.position.z = ( i * 50 ) - 500;
-        scene.add( line );
-    
-        var line = new THREE.Line( geometry, material );
-        line.position.x = ( i * 50 ) - 500;
-        line.rotation.y = 90 * Math.PI / 180;
-        scene.add( line );
-    }
-    
-    // add some ambient light
-    var ambientLight = new THREE.AmbientLight( 0x606060 );
-    scene.add( ambientLight );
-    
-    var materials = [];
-
-    for ( var i = 0; i < 6; i ++ ) {
-        materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
-    }
-    
-    cube = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
-    cube.position.y = 150;
-    cube.overdraw = true;
-    scene.add( cube );
-    */
-    // draw!
-    renderer.render(scene, camera);
-}
-
-$(document).ready(function () {
-    init();
-    Grid.init();
-});
-
 Grid = function() {
-    
     return {
         // map size
         x : 20,
         y : 20,
         z : 20,
         
-        cube_w:Math.floor(WIDTH/x),
-        cube_h:Math.floor(HEIGHT/y),
-        cube_d:Math.floor(400/z),
+        // block dimensions
+        cube_w:Math.floor(WIDTH/this.x),
+        cube_h:Math.floor(HEIGHT/this.y),
+        cube_d:Math.floor(400/this.z),
         
         // thresholds
         th : {
@@ -104,6 +26,11 @@ Grid = function() {
             // clear the map
             this.map = [];
             
+            // set the width and height of cubes
+            this.cube_w=Math.floor(WIDTH/this.x);
+            this.cube_h=Math.floor(HEIGHT/this.y);
+            this.cube_d=Math.floor(400/this.z);
+            
             // build out the (empty) map
             for (i=0;i<this.x;i++) {
                 // add the sub array
@@ -114,6 +41,11 @@ Grid = function() {
                     for (k=0;k<this.z;k++) {
                         // set the position to 0
                         this.map[i][j][k] = false;
+                        
+                        // randomly decide if we should populate this cell (about 10% of cells will be populated)
+                        if (Math.round(Math.random()*100)==1) {
+                            this.map[i][j][k] = this.addCell(i,j,k);
+                        }
                     }
                 }
             }
@@ -161,7 +93,7 @@ Grid = function() {
             return neighbours;
         },
         render: function() {
-            var newmap = []
+            var newmap = [];
             
             for (i=0;i<this.x;i++) {
                 // add the sub array
@@ -189,19 +121,12 @@ Grid = function() {
                         } else {
                             // check if we're in the breed threshold
                             if (n >= this.th.breed.min && n <= this.th.breed.max) {
-                                var materials = [];
-                                for ( var l = 0; l < 6; l ++ ) {
-                                    materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
+                                var newcell = this.addCell(i,j,k);
+                                
+                                if (newcell) {
+                                    // add the cell to the new map
+                                    newmap[i][j][k] = newcell;
                                 }
-                                
-                                var newcell = new THREE.Mesh( new THREE.CubeGeometry( this.cube_w, this.cube_h, this.cube_d, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
-                                // Position the cube
-                                newcell.position.x = i*this.cube_w;
-                                newcell.position.y = j*this.cube_h;
-                                newcell.position.z = k*this.cube_d;
-                                
-                                newcell.overdraw = true;
-                                scene.add( newcell );
                             }
                         }
                     }
@@ -210,6 +135,81 @@ Grid = function() {
             
             // replace the map
             this.map = newmap;
+            
+            // draw
+            renderer.render(scene, camera);
+        },
+        addCell: function (x,y,z) {
+            if (!this.is_alive(x,y,z)) {
+                var materials = [];
+                for ( var l = 0; l < 6; l ++ ) {
+                    materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
+                }
+                
+                var newcell = new THREE.Mesh( new THREE.CubeGeometry( this.cube_w, this.cube_h, this.cube_d, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
+                
+                // Position the cube
+                newcell.position.x = Math.round(x*this.cube_w);
+                newcell.position.y = Math.round(y*this.cube_h);
+                newcell.position.z = Math.round(z*this.cube_d);
+                
+                // draw it
+                newcell.overdraw = true;
+                scene.add( newcell );
+                
+                return newcell;
+            }
+            
+            return false;
         }
     };
 } ();
+
+var stage = $('#gameoflife');
+
+// set the scene size
+var WIDTH = 400,
+    HEIGHT = 400;
+
+// set some camera attributes
+var VIEW_ANGLE = 45,
+    ASPECT = WIDTH / HEIGHT,
+    NEAR = 1,
+    FAR = 10000;
+
+var renderer;
+var camera;
+var scene;
+
+function init() {
+    // create a canvas renderer, camera
+    // and a scene
+    renderer = new THREE.CanvasRenderer();
+    camera = new THREE.PerspectiveCamera(
+                   VIEW_ANGLE,
+                   ASPECT,
+                   NEAR,
+                   FAR );
+    
+    scene = new THREE.Scene();
+    
+    // the camera starts at 0,0,0 so pull it back
+    camera.position.x = 200;
+    camera.position.y = 200;
+    camera.position.z = 900;
+    
+    // start the renderer
+    renderer.setSize(WIDTH, HEIGHT);
+    
+    // attach the render-supplied DOM element
+    stage.append(renderer.domElement);
+    
+    Grid.init();
+    
+    // draw!
+    renderer.render(scene, camera);
+}
+
+$(document).ready(function () {
+    init();
+});
