@@ -39,17 +39,17 @@ body {
   <div id="controls">
     Map size:
     <select name="size" id="size">
-      <option value="20">Small</option>
-      <option value="25">Medium</option>
-      <option value="30">Big *</option>
-      <option value="50">Massive *</option>
+      <option value="20">Small (8000 cells)</option>
+      <option value="25">Medium (15625 cells)</option>
+      <option value="30">Big (27000 cells)*</option>
+      <option value="50">Massive (125000 cells)*</option>
     </select>
     Speed:
     <select name="speed" id="speed">
-      <option value="1000">Slow</option>
-      <option value="500">Medium</option>
-      <option value="100">Fast</option>
-      <option value="50">Hyper</option>
+      <option value="1000">Slow (1 generation/second)</option>
+      <option value="500">Medium (2 generations/second)</option>
+      <option value="100">Fast (10 generations/second)</option>
+      <option value="50">Hyper (20 generations/second)</option>
     </select>
     <input type="button" id="pause" value="Stop" />
   </div>
@@ -61,6 +61,6 @@ body {
     I used <a href="http://jquery.com/">jQuery</a> and <a href="https://github.com/mrdoob/three.js/">Three.js</a>
     so build this.
   </p>
-  <p>* May be slow... use at your own risk</p>
+  <p>* May be very slow... use at your own risk</p>
 </body>
 </html>
