@@ -29,6 +29,12 @@ Grid = function() {
             // clear the map
             this.map = [];
             
+            // set the new size
+            var size = $('#size').val();
+            this.x = size;
+            this.y = size;
+            this.z = size;
+            
             // set the width and height of cubes
             this.cube_w=Math.floor(WIDTH/this.x);
             this.cube_h=Math.floor(HEIGHT/this.y);
@@ -57,6 +63,10 @@ Grid = function() {
                 }
             }
             
+            // draw!
+            renderer.render(scene, camera);
+            
+            // start the game
             this.start();
         },
         /** Gets the 'life' value of a position on the map
@@ -279,9 +289,6 @@ function init() {
     stage.append(renderer.domElement);
     
     Grid.init();
-    
-    // draw!
-    renderer.render(scene, camera);
 }
 
 $('#size').change(function () {
@@ -294,17 +301,8 @@ $('#size').change(function () {
     // render the empty grid
     renderer.render(scene, camera);
     
-    // set the new size
-    var size = $(this).val();
-    Grid.x = size;
-    Grid.y = size;
-    Grid.z = size;
-    
     // re-initialize
     Grid.init();
-    
-    // draw!
-    renderer.render(scene, camera);
 });
 
 $(document).ready(function () {
