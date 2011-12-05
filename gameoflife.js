@@ -176,8 +176,17 @@ Grid = function() {
         add_cell: function (x,y,z) {
             if (!this.is_alive(x,y,z)) {
                 var materials = [];
+                
+                var color = 0x000000;
+                // set a base colour, which won't be black, and is somewhat based on position
+                var color_r = (((Math.random() * (x/8))+(this.x/4)+(x/2))/this.x)*0xff;
+                var color_g = (((Math.random() * (y/8))+(this.y/4)+(y/2))/this.y)*0xff;
+                var color_b = (((Math.random() * (z/8))+(this.z/4)+(z/2))/this.z)*0xff;
+                
+                color = (color_r * 0x010000) + (color_r * 0x000100) + color_b;
+                
                 for ( var l = 0; l < 6; l ++ ) {
-                    materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
+                    materials.push( new THREE.MeshBasicMaterial( { color: color } ) );
                 }
                 
                 var newcell = new THREE.Mesh( new THREE.CubeGeometry( this.cube_w, this.cube_h, this.cube_d, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
