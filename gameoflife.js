@@ -264,6 +264,7 @@ var VIEW_ANGLE = 45,
 var renderer;
 var camera;
 var scene;
+var target;
 
 function init() {
     // create a canvas renderer, camera
@@ -277,10 +278,14 @@ function init() {
     
     scene = new THREE.Scene();
     
+    target = new THREE.Vector3( Math.floor(WIDTH/2), Math.floor(HEIGHT/2), 200 );
+    target.normalize;
+    
     // the camera starts at 0,0,0 so pull it back
-    camera.position.x = Math.floor(WIDTH/2);
     camera.position.y = Math.floor(HEIGHT/2);
-    camera.position.z = 900;
+    camera.position.z = 800;
+    
+    camera.lookAt( target );
     
     // start the renderer
     renderer.setSize(WIDTH, HEIGHT);
@@ -289,6 +294,11 @@ function init() {
     stage.append(renderer.domElement);
     
     Grid.init();
+    
+    animate();
+    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+    document.addEventListener( 'touchmove', onDocumentTouchMove, false );
 }
 
 $('#size').change(function () {
@@ -304,6 +314,75 @@ $('#size').change(function () {
     // re-initialize
     Grid.init();
 });
+
+var targetRotation = 0;
+var targetRotationOnMouseDown = 0;
+var mouseXOnMouseDown;
+var mouseYOnMouseDown;
+var windowHalfX = Math.floor(WIDTH / 2);
+var windowHalfY = Math.floor(HEIGHT / 2);
+
+// animation
+function onDocumentMouseDown( event ) {
+	event.preventDefault();
+
+	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+	document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+
+	mouseXOnMouseDown = event.clientX - windowHalfX;
+	targetRotationOnMouseDown = targetRotation;
+}
+
+function onDocumentMouseMove( event ) {
+	mouseX = event.clientX - windowHalfX;
+
+	targetRotation = targetRotationOnMouseDown - ( mouseX - mouseXOnMouseDown ) * 0.5;
+}
+
+function onDocumentMouseUp( event ) {
+	document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+	document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+}
+
+function onDocumentMouseOut( event ) {
+	document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+	document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+}
+
+function onDocumentTouchStart( event ) {
+	if ( event.touches.length == 1 ) {
+		event.preventDefault();
+        
+		mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
+		targetRotationOnMouseDown = targetRotation;
+	}
+}
+
+function onDocumentTouchMove( event ) {
+	if ( event.touches.length == 1 ) {
+		event.preventDefault();
+        
+		mouseX = event.touches[ 0 ].pageX - windowHalfX;
+		targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.5;
+	}
+}
+
+function animate() {
+	requestAnimationFrame( animate );
+	renderAnim();
+}
+
+
+function renderAnim() {
+    var t = targetRotation;
+    if (t != 0) {
+        camera.position.x = 800 * Math.sin( t * Math.PI / 360 );
+        camera.position.z = 800 * Math.cos( t * Math.PI / 360 );
+        camera.lookAt( target );
+    }
+    
+	renderer.render( scene, camera );
+}
 
 $(document).ready(function () {
     init();
