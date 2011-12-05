@@ -183,7 +183,7 @@ Grid = function() {
                 var color_g = (((Math.random() * (y/8))+(this.y/4)+(y/2))/this.y)*0xff;
                 var color_b = (((Math.random() * (z/8))+(this.z/4)+(z/2))/this.z)*0xff;
                 
-                color = (color_r * 0x010000) + (color_r * 0x000100) + color_b;
+                color = (color_r * 0x010000) + (color_g * 0x000100) + color_b;
                 
                 for ( var l = 0; l < 6; l ++ ) {
                     materials.push( new THREE.MeshBasicMaterial( { color: color } ) );
