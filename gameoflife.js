@@ -317,6 +317,8 @@ $('#size').change(function () {
 
 var targetRotation = 0;
 var targetRotationOnMouseDown = 0;
+var targetYRotation = 0;
+var targetYRotationOnMouseDown = 0;
 var mouseXOnMouseDown;
 var mouseYOnMouseDown;
 var windowHalfX = Math.floor(WIDTH / 2);
@@ -331,12 +333,16 @@ function onDocumentMouseDown( event ) {
 
 	mouseXOnMouseDown = event.clientX - windowHalfX;
 	targetRotationOnMouseDown = targetRotation;
+	mouseYOnMouseDown = event.clientY - windowHalfY;
+	targetYRotationOnMouseDown = targetYRotation;
 }
 
 function onDocumentMouseMove( event ) {
 	mouseX = event.clientX - windowHalfX;
-
 	targetRotation = targetRotationOnMouseDown - ( mouseX - mouseXOnMouseDown ) * 0.5;
+    
+	mouseY = event.clientY - windowHalfY;
+	targetYRotation = targetYRotationOnMouseDown + ( mouseY - mouseYOnMouseDown ) * 0.3;
 }
 
 function onDocumentMouseUp( event ) {
@@ -355,6 +361,10 @@ function onDocumentTouchStart( event ) {
         
 		mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
 		targetRotationOnMouseDown = targetRotation;
+        
+        
+        mouseYOnMouseDown = event.touches[ 0 ].pageY - windowHalfY;
+        targetYRotationOnMouseDown = targetYRotation;
 	}
 }
 
@@ -364,6 +374,9 @@ function onDocumentTouchMove( event ) {
         
 		mouseX = event.touches[ 0 ].pageX - windowHalfX;
 		targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.5;
+        
+        mouseY = event.touches[ 0 ].pageY - windowHalfY;
+        targetYRotation = targetYRotationOnMouseDown - ( mouseY - mouseYOnMouseDown ) * 0.3;
 	}
 }
 
@@ -375,9 +388,19 @@ function animate() {
 
 function renderAnim() {
     var t = targetRotation;
-    if (t != 0) {
+    var ty = targetYRotation;
+    if (t!=0 && ty!= 0) {
+        camera.position.x = 800 * Math.sin( t * Math.PI / 360 );
+        camera.position.y = 800 * Math.sin( ty * Math.PI / 360 );
+        camera.position.z = 800 * Math.cos( t * Math.PI / 360 );
+        camera.lookAt( target );
+    } else if (t != 0) {
         camera.position.x = 800 * Math.sin( t * Math.PI / 360 );
         camera.position.z = 800 * Math.cos( t * Math.PI / 360 );
+        camera.lookAt( target );
+    } else if (ty != 0) {
+        camera.position.y = 800 * Math.sin( ty * Math.PI / 360 );
+        camera.position.z = 800 * Math.cos( ty * Math.PI / 360 );
         camera.lookAt( target );
     }
     
