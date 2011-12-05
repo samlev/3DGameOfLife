@@ -37,6 +37,14 @@ body {
   </p>
   <div id="gameoflife" style="border:1px solid #CCCCCC; margin:20px;"></div>
   <div id="controls">
+    Map size:
+    <select name="size" id="size">
+      <option value="20">Small</option>
+      <option value="30">Medium</option>
+      <option value="40">Big *</option>
+      <option value="50">Massive *</option>
+    </select>
+    Speed:
     <select name="speed" id="speed">
       <option value="1000">Slow</option>
       <option value="500">Medium</option>
@@ -53,5 +61,6 @@ body {
     I used <a href="http://jquery.com/">jQuery</a> and <a href="https://github.com/mrdoob/three.js/">Three.js</a>
     so build this.
   </p>
+  <p>* May be slow... use at your own risk</p>
 </body>
 </html>

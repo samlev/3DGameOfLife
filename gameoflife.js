@@ -51,7 +51,7 @@ Grid = function() {
                         
                         // randomly decide if we should populate this cell (about 10% of cells will be populated)
                         if (Math.round(Math.random()*10)==1) {
-                            this.map[i][j][k] = this.addCell(i,j,k);
+                            this.map[i][j][k] = this.add_cell(i,j,k);
                         }
                     }
                 }
@@ -139,7 +139,7 @@ Grid = function() {
                         } else {
                             // check if we're in the breed threshold
                             if (n >= this.th.breed.min && n <= this.th.breed.max) {
-                                var newcell = this.addCell(i,j,k);
+                                var newcell = this.add_cell(i,j,k);
                                 
                                 if (newcell) {
                                     // add the cell to the new map
@@ -163,7 +163,7 @@ Grid = function() {
                 this.timeout = setTimeout('Grid.render();',$('#speed').val());
             }
         },
-        addCell: function (x,y,z) {
+        add_cell: function (x,y,z) {
             if (!this.is_alive(x,y,z)) {
                 var materials = [];
                 for ( var l = 0; l < 6; l ++ ) {
@@ -216,6 +216,24 @@ Grid = function() {
                 // start the game
                 this.timeout = setTimeout('Grid.render();',$('#speed').val());
             }
+        },
+        clear_grid: function() {
+            var i = 0;
+            var j = 0;
+            var k = 0;
+            
+            // build out the (empty) map
+            for (i=0;i<this.x;i++) {
+                for (j=0;j<this.y;j++) {
+                    for (k=0;k<this.z;k++) {
+                        cell = this.is_alive(i,j,k);
+                        
+                        if (cell) {
+                            scene.remove(cell);
+                        }
+                    }
+                }
+            }
         }
     };
 } ();
@@ -265,6 +283,29 @@ function init() {
     // draw!
     renderer.render(scene, camera);
 }
+
+$('#size').change(function () {
+    // stop the game
+    Grid.pause();
+    
+    // get rid of the old grid
+    Grid.clear_grid();
+    delete Grid.map;
+    // render the empty grid
+    renderer.render(scene, camera);
+    
+    // set the new size
+    var size = $(this).val();
+    Grid.x = size;
+    Grid.y = size;
+    Grid.z = size;
+    
+    // re-initialize
+    Grid.init();
+    
+    // draw!
+    renderer.render(scene, camera);
+});
 
 $(document).ready(function () {
     init();
