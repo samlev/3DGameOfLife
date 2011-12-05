@@ -12,8 +12,8 @@ Grid = function() {
         
         // thresholds
         th : {
-            lonely: 2,
-            breed: {min: 3, max: 5},
+            lonely: 1,
+            breed: 5,
             overcrowd: 8
         },
         
@@ -55,8 +55,8 @@ Grid = function() {
                         // set the position to 0
                         this.map[i][j][k] = false;
                         
-                        // randomly decide if we should populate this cell (about 10% of cells will be populated)
-                        if (Math.round(Math.random()*10)==1) {
+                        // randomly decide if we should populate this cell (about 2% of cells will be populated)
+                        if (Math.round(Math.random()*50)==1) {
                             this.map[i][j][k] = this.add_cell(i,j,k);
                         }
                     }
@@ -106,8 +106,10 @@ Grid = function() {
                 for (j=min_y;j<=max_y;j++) {
                     for (k=min_z;k<=max_z;k++) {
                         // ignore the item we're looking for neighbours for
-                        if (i!=x && j!=y && k!=z) {
-                            neighbours += (this.is_alive(i,j,k)?1:0);
+                        if (!(i==x && j==y && k==z)) {
+                            if (this.is_alive(i,j,k)) {
+                                neighbours ++ ;
+                            }
                         }
                     }
                 }
@@ -148,7 +150,7 @@ Grid = function() {
                             }
                         } else {
                             // check if we're in the breed threshold
-                            if (n >= this.th.breed.min && n <= this.th.breed.max) {
+                            if (n == this.th.breed) {
                                 var newcell = this.add_cell(i,j,k);
                                 
                                 if (newcell) {
