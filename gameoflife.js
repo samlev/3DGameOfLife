@@ -305,9 +305,9 @@ function init() {
     Grid.init();
     
     animate();
-    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-    document.addEventListener( 'touchstart', onDocumentTouchStart, false );
-    document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+    renderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    renderer.domElement.addEventListener( 'touchstart', onDocumentTouchStart, false );
+    renderer.domElement.addEventListener( 'touchmove', onDocumentTouchMove, false );
 }
 
 $('#size').change(function () {
