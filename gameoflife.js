@@ -326,6 +326,20 @@ $('#size').change(function () {
     Grid.init();
 });
 
+$('#reset').click(function () {
+    // stop the game
+    Grid.pause();
+    
+    // get rid of the old grid
+    Grid.clear_grid();
+    delete Grid.map;
+    // render the empty grid
+    renderer.render(scene, camera);
+    
+    // re-initialize
+    Grid.init();
+});
+
 var targetRotation = 0;
 var targetRotationOnMouseDown = 0;
 var targetYRotation = 0;
