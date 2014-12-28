@@ -10,13 +10,6 @@ Grid = function() {
         cube_h:Math.floor(HEIGHT/this.y),
         cube_d:Math.floor(400/this.z),
         
-        // thresholds
-        th : {
-            lonely: 1,
-            breed: 5,
-            overcrowd: 8
-        },
-        
         // the actual map
         map: [],
         
@@ -141,7 +134,7 @@ Grid = function() {
                         // transpose
                         if (cell) {
                             // is the cell lonely or overcrowded?
-                            if (n <= this.th.lonely || n >= this.th.overcrowd) {
+                            if (n <= $('#lonely').val() || n >= $('#overcrowd').val()) {
                                 // kill the cell off
                                 scene.remove(cell);
                             } else {
@@ -150,7 +143,7 @@ Grid = function() {
                             }
                         } else {
                             // check if we're in the breed threshold
-                            if (n == this.th.breed) {
+                            if (n == $('#breed').val()) {
                                 var newcell = this.add_cell(i,j,k);
                                 
                                 if (newcell) {
